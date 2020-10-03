@@ -1,0 +1,15 @@
+{% extends 'tutorial/base.html' %}
+{% block content %}
+    {% if user.is_authenticated %}
+        <div class="ui visible message">
+            <p>Check out your profile section.</p>
+        </div>
+        <div class="ui visible message">
+            <p>Explore courses offered.</p>
+        </div>
+    {% else %}
+        <div class="ui warning message">
+            <p>Register or Login to take tutorials.</p>
+        </div>
+    {% endif %}
+{% endblock %}

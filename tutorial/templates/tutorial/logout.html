@@ -1,0 +1,8 @@
+{% extends 'tutorial/base.html' %}
+{% block content %}
+    <div>
+        <p class="ui warning message">You are being logged out.</p>
+        <hr>
+        <a href="{% url 'site-login' %}" class="ui secondary button">Log in again!</a>
+    </div>
+{% endblock %}

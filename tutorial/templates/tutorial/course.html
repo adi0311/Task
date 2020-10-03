@@ -1,8 +1,32 @@
 {% extends 'tutorial/base.html' %}
 {% block content %}
     {% for course in courses %}
-        <div>
-            {{ course.name }}
+        <div class="ui cards">
+            <div class="card">
+                <div class="content">
+                    <i class="right floated large ui book icon"></i>
+                    <div class="header">
+                        {{ course.name }}
+                    </div>
+                    <!-- <div class="meta">
+                        Friends of Veronika
+                    </div> -->
+                    <div class="description">
+                        {{ course.description }}
+                    </div>
+                </div>
+                <div class="extra content">
+                    <div class="ui two buttons">
+                        <form method="POST" action='{% url "register-course" %}'>
+                            {% csrf_token %}
+                            <input name="courseid" value="{{ course.id }}" style="visibility: hidden;">
+                            <button class="ui basic green button" type="submit">Register</button>
+                        </form>
+                        <!-- <div  id="{{ course.id }}">Register</div> -->
+                        <!-- <div class="ui basic red button">Decline</div> -->
+                    </div>
+                </div>
+            </div>
         </div>
     {% endfor %}
 {% endblock %}

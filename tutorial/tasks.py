@@ -17,7 +17,7 @@ from time import sleep
 
 @shared_task
 def deadline_email(id, time):
-    sleep(time * 86400)
+    sleep(time * 10)
     register = Register.objects.get(id=id)
     user = register.user
     chapter = register.chapter
@@ -41,3 +41,5 @@ def deadline_email(id, time):
         email.fail_silently = False
         email.send()
         # print("EMAIL SEND", user.username)
+        # rabbitmq-plugins enable rabbitmq_management
+        # celery -A task worker --loglevel=INFO

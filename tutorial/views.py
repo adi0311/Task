@@ -6,6 +6,10 @@ from .models import Student, Teacher, Course, Chapter, Register
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from datetime import datetime, date, timedelta
+from django.core.mail import EmailMessage
+from django.conf import settings
+from django.template.loader import render_to_string
+from .tasks import deadline_email
 
 
 def homepage(request):
@@ -34,7 +38,14 @@ def register(request):
 
 
 def courses(request):
-    return render(request, "tutorial/course.html", {'courses': Course.objects.all()})
+    user = request.user
+    courses = list(Course.objects.all())
+    for obj in Register.objects.filter(user=user):
+        course_obj = Course.objects.get(id=obj.course.id)
+        if course_obj in courses:
+            courses.remove(course_obj)
+        # s.add(obj.course)
+    return render(request, "tutorial/course.html", {'courses': courses})
 
 
 def register_for_course(request):
@@ -54,12 +65,48 @@ def register_for_course(request):
     # print(course_chapters)
     # print(course)
     for chapters in course_chapters:
-        register = Register.objects.create(course=course, user=request.user, chapter=chapters, due_date=due_date + timedelta(days=chapters.due))
+        new_date = due_date + timedelta(days=chapters.due)
+        register = Register.objects.create(course=course, user=request.user, chapter=chapters, due_date=new_date)
         register.save()
+        # print("MAIL INITIATED")
+        deadline_email.delay(register.id, chapters.due)
     return redirect("site-profile")
 
+
+def validate_chapter(request):
+    id = request.POST['complete']
+    register = Register.objects.get(id=id)
+    register.completed = True
+    register.save()
+    return redirect('site-profile')
+
+
+# def testing(request):
+#     template = render_to_string(
+#         'tutorial/mail.html',
+#         {'user': request.user},
+#     )
+#     email = EmailMessage(
+#         'Deadline passed!',
+#         template,
+#         settings.EMAIL_HOST_USER,
+#         ['adipanwar311@gmail.com'],
+#     )
+#     email.fail_silently = False
+#     email.send()
+#     print("PREPARING TO SEND EMAIL")
+#     deadline_email.delay(request.user.id, 100)
+#     return render(request, "tutorial/home.html", {})
 
 
 @login_required
 def profile(request):
-    return render(request, "tutorial/profile.html", {})
+    courses = dict()
+    for obj in Register.objects.filter(user=request.user):
+        course = Course.objects.get(id=obj.course.id)
+        if course not in courses.keys():
+            courses[course] = list()
+        courses[course].append(obj)
+    today_date = date(datetime.now().year, datetime.now().month, datetime.now().day)
+    # print(courses)
+    return render(request, "tutorial/profile.html", {'courses': courses, 'date': today_date})

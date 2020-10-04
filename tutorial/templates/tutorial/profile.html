@@ -6,14 +6,82 @@
         </div>
         <div class="content">
             <p class="header">{{ user.username }}</p>
-            <p>Name: {{ user.first_name }} {{ user.last_name }}</p>
-            <p>Email: {{ user.email }}</p>
+            <p><strong>Name:</strong> {{ user.first_name }} {{ user.last_name }}</p>
+            <p><strong>Email:</strong> {{ user.email }}</p>
         </div>
         <div class="extra content">
             <div>
-                <i class="users icon"></i>
-                    Registered Courses
+                <i class="paper plane icon"></i>
+                    <h4 style="display: inline; color: teal">Registered Courses</h4>
             </div>
+            <div class="ui list">
+                {% for course, registers in courses.items %}
+                    <div class="item">
+                        <i class="large caret down icon"></i>
+                        <div class="content">
+                            <div class="header">{{ course.name }}</div>
+                            <div class="description">{{ course.description }}</div>
+                            <div class="list">
+                                {% for register in registers %}
+                                    <div class="item">
+                                        <i class="large caret right icon"></i>
+                                        <div class="content">
+                                            {% if register.due_date >= date %}
+                                                <div class="header">Due Date is: {{ register.due_date }}</div>
+                                                <div class="description">{{ register.chapter.name }}</div>
+                                                {% if not register.completed %}
+                                                    <form action="{% url 'validate-chapter' %}"method="POST">
+                                                        {% csrf_token %}
+                                                        <input name="complete" value="{{ register.id }}" style="visibility: hidden;">
+                                                        <button type="submit" class="ui tiny labeled icon green button">
+                                                            <i class="calendar check outline icon"></i>
+                                                            Mark Completed
+                                                        </button>
+                                                    </form>
+                                                {% endif %}
+                                            {% else %}
+                                                {% if register.completed %}
+                                                    <div class="header">Due Date was: {{ register.due_date }}</div>
+                                                    <div class="description">{{ register.chapter.name }}</div>
+                                                {% else %}
+                                                    <div class="header" style="background-color: rgb(240, 109, 135);">Due Date was: {{ register.due_date }}</div>
+                                                    <div class="description" style="background-color: rgb(240, 109, 135);">{{ register.chapter.name }}</div>
+                                                {% endif %}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <!-- {% for course, registers in courses.items %}
+                <div class="ui styled accordion">
+                    <div class="title">
+                        <i class="dropdown icon"></i>
+                        {{ course.name }}
+                    </div>
+                    <div class="content">
+                        <div class="ui list transition hidden">
+                            {% for register in registers %}
+                                <div class="item">
+                                    <i class="ui large caret right icon"></i>
+                                    <div class="content">
+                                        <div class="header">Chapter {{ forloop.counter }}:</div>
+                                        {{ register.chapter.name }}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %} -->
         </div>
     </div>
+    <script language='javascript'>
+        $(document).ready(function(){
+            $('.ui.accordion').accordion();
+        });
+    </script>
 {% endblock %}

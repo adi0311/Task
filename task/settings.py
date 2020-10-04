@@ -20,9 +20,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'r8x)88#edtp-7psub@ah0(-c6cnhcs)t93==+^!on+f#65kf+l'
+SECRET_KEY = os.environ.get('SECRET_KEY_TASK')
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# DEBUG = os.environ.get('DEBUG_VALUE') == 'True'
 DEBUG = True
 
 ALLOWED_HOSTS = []
@@ -123,3 +124,15 @@ STATIC_URL = '/static/'
 LOGIN_REDIRECT_URL = 'site-profile'
 
 LOGIN_URL = 'site-login'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
+EMAIL_HOST_PASSWORD = 'gviraxvlqtlithtr'
+# EMAIL_HOST_PASSWORD = os.environ.get('TASK_EMAIL_PASSWORD')
+CELERY_BROKER_URL = 'amqp://guest@localhost'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'

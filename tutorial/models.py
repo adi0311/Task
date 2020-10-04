@@ -37,3 +37,4 @@ class Register(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     chapter = models.ForeignKey(Chapter, on_delete=models.CASCADE)
     due_date = models.DateField(auto_now=False)
+    completed = models.BooleanField(default=False)

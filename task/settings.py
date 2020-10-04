@@ -23,8 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get('SECRET_KEY_TASK')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = os.environ.get('DEBUG_VALUE') == 'True'
-DEBUG = True
+DEBUG = os.environ.get('DEBUG_VALUE') == 'True'
 
 ALLOWED_HOSTS = []
 
@@ -130,8 +129,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
-EMAIL_HOST_PASSWORD = 'gviraxvlqtlithtr'
-# EMAIL_HOST_PASSWORD = os.environ.get('TASK_EMAIL_PASSWORD')
+EMAIL_HOST_PASSWORD = os.environ.get('TASK_EMAIL_PASSWORD')
 CELERY_BROKER_URL = 'amqp://guest@localhost'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'

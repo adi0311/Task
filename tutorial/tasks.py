@@ -40,6 +40,9 @@ def deadline_email(id, time):
         )
         email.fail_silently = False
         email.send()
+        print("SENT")
+    else:
+        print("NOT SENT")
         # print("EMAIL SEND", user.username)
         # rabbitmq-plugins enable rabbitmq_management
         # celery -A task worker --loglevel=INFO
